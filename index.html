@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>👤 Tên Của Bạn - Portfolio</title>
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet" />
+  <!-- Font Awesome Icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --main: #00f2fe;
+      --main2: #4facfe;
+      --bg: #0f0f1e;
+      --glass: rgba(255, 255, 255, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: white;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .background-glow {
+      position: absolute;
+      width: 300%;
+      height: 300%;
+      background: conic-gradient(from 0deg, #00f2fe, #4facfe, #8e54e9, #00f2fe);
+      animation: rotate 25s linear infinite;
+      filter: blur(280px);
+      opacity: 0.08;
+      z-index: -1;
+    }
+
+    @keyframes rotate {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .card {
+      width: 380px;
+      padding: 40px;
+      background: var(--glass);
+      backdrop-filter: blur(30px);
+      border-radius: 25px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.4);
+      text-align: center;
+      animation: fadeUp 1.2s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .avatar-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .avatar-border {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, #00f2fe, #4facfe, #8e54e9, #00f2fe);
+      padding: 5px;
+      animation: spin-border 6s linear infinite;
+      position: relative;
+    }
+
+    @keyframes spin-border {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      background: linear-gradient(135deg, var(--main), var(--main2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.05rem;
+      color: #cfcfcf;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .buttons a {
+      padding: 10px 18px;
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--main);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .buttons a::before {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 100%;
+      background: var(--main);
+      top: 0;
+      left: 0;
+      z-index: 0;
+      transition: 0.3s;
+      border-radius: 10px;
+    }
+
+    .buttons a:hover::before {
+      width: 100%;
+    }
+
+    .buttons a:hover {
+      color: #0f0f1e;
+      box-shadow: 0 0 15px var(--main);
+    }
+
+    .buttons a span {
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (max-width: 450px) {
+      .card {
+        width: 90%;
+        padding: 30px;
+      }
+
+      .avatar-border {
+        width: 120px;
+        height: 120px;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-glow"></div>
+  <div class="card">
+    <div class="avatar-wrapper">
+      <div class="avatar-border">
+        <img src="https://cdn.discordapp.com/avatars/1253726505402499203/6602147533b258ea90daf9b2c4a45176.webp?size=80" class="avatar" alt="Avatar" />
+      </div>
+    </div>
+    <h1>KhoitongDZ</h1>
+    <p>Xin chào! Mình là một Developer,tạo sản phẩm chất lượng cao từ web, app đến Roblox scripting.</p>
+    <div class="buttons">
+      <a href="https://github.com/Khoitongdz" target="_blank"><span><i class="fab fa-github"></i> GitHub</span></a>
+      <a href="https://discord.gg/w26VGWmMPb" target="_blank"><span><i class="fab fa-discord"></i> Discord</span></a>
+      <a href="mailto:khoitong0000@gmail.com"><span><i class="fas fa-envelope"></i> Email</span></a>
+    </div>
+  </div>
+</body>
+</html>
