@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KhoitongDZ - Portfolio</title>
+  <title>🎮 KhoitongDZ - Gaming Portfolio</title>
 
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet"/>
@@ -16,11 +16,12 @@
 
   <style>
     :root {
-      --main: #e50914;
+      --main: #ff0022;
       --main2: #8b0000;
       --bg: #0d0d0d;
       --glass: rgba(255, 255, 255, 0.03);
       --text-light: #dddddd;
+      --glow: 0 0 15px #ff0022, 0 0 30px #ff0022, 0 0 45px #8b0000;
     }
 
     * {
@@ -31,7 +32,7 @@
 
     body {
       font-family: 'Outfit', sans-serif;
-      background: var(--bg);
+      background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
       color: white;
       height: 100vh;
       overflow: hidden;
@@ -52,7 +53,7 @@
       position: absolute;
       width: 300%;
       height: 300%;
-      background: radial-gradient(circle, #e50914 0%, transparent 70%);
+      background: radial-gradient(circle, #ff0022 0%, transparent 70%);
       animation: rotate 20s linear infinite;
       filter: blur(300px);
       opacity: 0.08;
@@ -67,38 +68,59 @@
       width: 400px;
       padding: 40px;
       background: var(--glass);
-      backdrop-filter: blur(25px);
-      border-radius: 20px;
-      box-shadow: 0 0 40px rgba(255, 0, 0, 0.2);
+      backdrop-filter: blur(30px);
+      border-radius: 25px;
+      box-shadow: var(--glow);
       text-align: center;
-      animation: fadeUp 1.2s ease forwards;
+      animation: fadeUp 1.5s ease forwards;
       opacity: 0;
-      z-index: 1;
+      position: relative;
+      overflow: hidden;
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(40px) scale(0.98); }
+      from { opacity: 0; transform: translateY(40px) scale(0.95); }
       to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(120deg, rgba(255,0,34,0.2), transparent, rgba(255,0,34,0.2));
+      animation: lightSweep 6s infinite linear;
+      transform: rotate(25deg);
+    }
+
+    @keyframes lightSweep {
+      0% { top: -100%; left: -50%; }
+      100% { top: 100%; left: 50%; }
     }
 
     .avatar-wrapper {
       display: flex;
       justify-content: center;
       margin-bottom: 20px;
+      position: relative;
     }
 
     .avatar-border {
       width: 160px;
       height: 160px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2); /* Làm viền mờ với độ trong suốt */
       padding: 5px;
-      animation: spin-border 6s linear infinite;
-      box-shadow: 0 0 30px rgba(255, 0, 0, 0.4);
+      background: transparent;
+      position: relative;
+      box-shadow: var(--glow);
+      animation: pulse 3s ease-in-out infinite;
     }
 
-    @keyframes spin-border {
-      100% { transform: rotate(360deg); }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 15px #ff0022; }
+      50% { box-shadow: 0 0 30px #ff0022; }
     }
 
     .avatar {
@@ -106,6 +128,7 @@
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
+      border: 3px solid rgba(255, 255, 255, 0.1);
     }
 
     h1 {
@@ -115,6 +138,7 @@
       -webkit-text-fill-color: transparent;
       font-weight: 800;
       margin-bottom: 12px;
+      text-shadow: 0 0 10px rgba(255,0,34,0.4);
     }
 
     p {
@@ -128,20 +152,20 @@
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 14px;
     }
 
     .buttons a {
-      padding: 10px 18px;
-      background: rgba(255, 255, 255, 0.06);
+      padding: 12px 20px;
+      background: rgba(255, 255, 255, 0.05);
       color: var(--main);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
       font-weight: 600;
       text-decoration: none;
-      transition: 0.3s;
       position: relative;
       overflow: hidden;
+      transition: 0.3s;
     }
 
     .buttons a::before {
@@ -153,8 +177,7 @@
       top: 0;
       left: 0;
       z-index: 0;
-      transition: 0.3s;
-      border-radius: 10px;
+      transition: 0.4s ease;
     }
 
     .buttons a:hover::before {
@@ -163,7 +186,7 @@
 
     .buttons a:hover {
       color: #fff;
-      box-shadow: 0 0 15px var(--main);
+      box-shadow: var(--glow);
     }
 
     .buttons a span {
@@ -188,7 +211,7 @@
       </div>
     </div>
     <h1>KhoitongDZ</h1>
-    <p>Chào mừng đến với thế giới lập trình game thủ! Mình là dev chuyên về Web, App và Roblox Script.</p>
+    <p>Chào mừng đến với thế giới lập trình game! Mình là dev chuyên về Web, App và Roblox Script.</p>
     <div class="buttons">
       <a href="https://github.com/Khoitongdz" target="_blank"><span><i class="fab fa-github"></i> GitHub</span></a>
       <a href="https://discord.gg/w26VGWmMPb" target="_blank"><span><i class="fab fa-discord"></i> Discord</span></a>
@@ -199,8 +222,8 @@
   <script>
     particlesJS("particles-js", {
       particles: {
-        number: { value: 70 },
-        color: { value: "#e50914" },
+        number: { value: 100 },
+        color: { value: "#ff0022" },
         shape: { type: "circle" },
         opacity: { value: 0.4 },
         size: { value: 3 },
