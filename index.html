@@ -1,258 +1,78 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KhoitongDZ</title>
-
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet"/>
-
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
-  <!-- Particles.js -->
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-
-  <style>
-    :root {
-      --main: #ff0022;
-      --main2: #8b0000;
-      --bg: #0d0d0d;
-      --glass: rgba(255, 255, 255, 0.03);
-      --text-light: #dddddd;
-      --glow: 0 0 15px #ff0022, 0 0 30px #ff0022, 0 0 45px #8b0000;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
-      color: white;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    #particles-js {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
-    }
-
-    .background-glow {
-      position: absolute;
-      width: 300%;
-      height: 300%;
-      background: radial-gradient(circle, #ff0022 0%, transparent 70%);
-      animation: rotate 20s linear infinite;
-      filter: blur(300px);
-      opacity: 0.08;
-      z-index: -1;
-    }
-
-    @keyframes rotate {
-      100% { transform: rotate(360deg); }
-    }
-
-    .card {
-      width: 400px;
-      padding: 40px;
-      background: var(--glass);
-      backdrop-filter: blur(30px);
-      border-radius: 25px;
-      box-shadow: var(--glow);
-      text-align: center;
-      animation: fadeUp 1.5s ease forwards;
-      opacity: 0;
-      position: relative;
-      overflow: hidden;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(40px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .card::after {
-      content: '';
-      position: absolute;
-      top: -100%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(120deg, rgba(255,0,34,0.2), transparent, rgba(255,0,34,0.2));
-      animation: lightSweep 6s infinite linear;
-      transform: rotate(25deg);
-    }
-
-    @keyframes lightSweep {
-      0% { top: -100%; left: -50%; }
-      100% { top: 100%; left: 50%; }
-    }
-
-    .avatar-wrapper {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .avatar-border {
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      padding: 5px;
-      background: transparent;
-      position: relative;
-      box-shadow: var(--glow);
-      animation: pulse 3s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 15px #ff0022; }
-      50% { box-shadow: 0 0 30px #ff0022; }
-    }
-
-    .avatar {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid rgba(255, 255, 255, 0.1);
-    }
-
-    h1 {
-      font-size: 2.4rem;
-      background: linear-gradient(135deg, var(--main), var(--main2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 800;
-      margin-bottom: 12px;
-      text-shadow: 0 0 10px rgba(255,0,34,0.4);
-    }
-
-    p {
-      font-size: 1.1rem;
-      color: var(--text-light);
-      margin-bottom: 25px;
-      line-height: 1.5;
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .buttons a {
-      padding: 12px 20px;
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--main);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      position: relative;
-      overflow: hidden;
-      transition: 0.3s;
-    }
-
-    .buttons a::before {
-      content: "";
-      position: absolute;
-      width: 0%;
-      height: 100%;
-      background: var(--main);
-      top: 0;
-      left: 0;
-      z-index: 0;
-      transition: 0.4s ease;
-    }
-
-    .buttons a:hover::before {
-      width: 100%;
-    }
-
-    .buttons a:hover {
-      color: #fff;
-      box-shadow: var(--glow);
-    }
-
-    .buttons a span {
-      position: relative;
-      z-index: 1;
-    }
-
-    @media (max-width: 450px) {
-      .card { width: 90%; padding: 30px; }
-      .avatar-border { width: 120px; height: 120px; }
-      h1 { font-size: 1.8rem; }
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spam Tin Nhắn Webhook Discord</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div id="particles-js"></div>
-  <div class="background-glow"></div>
-  <div class="card">
-    <div class="avatar-wrapper">
-      <div class="avatar-border">
-        <img src="https://cdn.discordapp.com/avatars/1253726505402499203/6602147533b258ea90daf9b2c4a45176.webp?size=128" class="avatar" alt="Avatar" />
-      </div>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-4">Spam Tin Nhắn Webhook Discord</h1>
+    
+    <div class="mb-4">
+      <label for="webhook-url" class="block text-sm font-medium text-gray-700">URL Webhook Discord</label>
+      <input type="text" id="webhook-url" placeholder="https://discord.com/api/webhooks/..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
     </div>
-    <h1>KhoitongDZ</h1>
-    <p>Chào mừng đến với thế giới lập trình game! Mình là dev chuyên về Web, App và Roblox Script.</p>
-    <div class="buttons">
-      <a href="https://github.com/Khoitongdz" target="_blank"><span><i class="fab fa-github"></i> GitHub</span></a>
-      <a href="https://discord.gg/w26VGWmMPb" target="_blank"><span><i class="fab fa-discord"></i> Discord</span></a>
-      <a href="mailto:khoitong0000@gmail.com"><span><i class="fas fa-envelope"></i> Email</span></a>
+
+    <div class="mb-4">
+      <label for="message" class="block text-sm font-medium text-gray-700">Nội dung tin nhắn</label>
+      <textarea id="message" rows="4" placeholder="Nhập tin nhắn để spam..." class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
     </div>
+
+    <div class="flex justify-between gap-2 mb-4">
+      <button onclick="startSpam()" class="w-1/2 bg-green-500 text-white p-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400">Bắt đầu spam</button>
+      <button onclick="stopSpam()" class="w-1/2 bg-red-500 text-white p-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">Dừng spam</button>
+    </div>
+
+    <p id="status" class="text-center text-sm text-gray-600"></p>
+    <p class="mt-2 text-xs text-red-600">⚠️ Không chia sẻ URL webhook công khai vì bất kỳ ai có URL đều có thể gửi tin nhắn tới kênh của bạn!</p>
   </div>
 
   <script>
-    particlesJS("particles-js", {
-      particles: {
-        number: { value: 100 },
-        color: { value: "#ff0022" },
-        shape: { type: "circle" },
-        opacity: { value: 0.4 },
-        size: { value: 3 },
-        line_linked: {
-          enable: true,
-          distance: 150,
-          color: "#8b0000",
-          opacity: 0.3,
-          width: 1
-        },
-        move: {
-          enable: true,
-          speed: 2,
-          direction: "none",
-          out_mode: "out"
-        }
-      },
-      interactivity: {
-        events: {
-          onhover: { enable: true, mode: "grab" },
-          onclick: { enable: true, mode: "push" }
-        },
-        modes: {
-          grab: { distance: 140, line_linked: { opacity: 0.5 } },
-          push: { particles_nb: 4 }
-        }
-      },
-      retina_detect: true
-    });
+    let spamInterval;
+
+    function startSpam() {
+      const webhookURL = document.getElementById('webhook-url').value.trim();
+      const message = document.getElementById('message').value.trim();
+      const status = document.getElementById('status');
+
+      if (!webhookURL || !message) {
+        status.textContent = 'Vui lòng nhập đầy đủ URL webhook và nội dung tin nhắn!';
+        status.className = 'text-center text-sm text-red-600';
+        return;
+      }
+
+      if (!webhookURL.startsWith('https://discord.com/api/webhooks/')) {
+        status.textContent = 'URL webhook không hợp lệ! Vui lòng kiểm tra lại.';
+        status.className = 'text-center text-sm text-red-600';
+        return;
+      }
+
+      status.textContent = 'Đang spam tin nhắn...';
+      status.className = 'text-center text-sm text-blue-600';
+
+      spamInterval = setInterval(() => {
+        fetch(webhookURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content: message,
+            username: 'Webhook',
+            avatar_url: 'https://i.imgur.com/AfFp7pu.png'
+          })
+        }).catch(() => {
+          status.textContent = 'Lỗi khi gửi! Có thể đã bị chặn hoặc rate limit.';
+          status.className = 'text-center text-sm text-red-600';
+        });
+      }, 500); // gửi mỗi 500ms, bạn có thể chỉnh chậm hơn
+    }
+
+    function stopSpam() {
+      clearInterval(spamInterval);
+      document.getElementById('status').textContent = 'Đã dừng spam.';
+      document.getElementById('status').className = 'text-center text-sm text-green-600';
+    }
   </script>
 </body>
 </html>
