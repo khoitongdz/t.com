@@ -1,131 +1,149 @@
 <!DOCTYPE html>
-<html lang="vi" class="dark">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Spam Webhook Discord</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dự báo thời tiết từ IP</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            primary: '#3b82f6',
-            danger: '#ef4444',
-            success: '#10b981',
-          }
-        }
-      }
-    }
-  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .card { @apply bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6; }
+  </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 flex items-center justify-center min-h-screen px-4">
-
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-2xl w-full max-w-md transition-all duration-500">
-    <h1 class="text-3xl font-extrabold text-center mb-6">💬 Spam Webhook Discord</h1>
-
-    <div class="space-y-4">
-      <div>
-        <label class="block text-sm mb-1">🔗 URL Webhook</label>
-        <input type="text" id="webhook-url" placeholder="https://discord.com/api/webhooks/..." 
-          class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"/>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-b from-sky-300 via-white to-sky-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-6 transition-colors duration-500">
+  <div class="max-w-5xl w-full">
+    <header class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-bold text-slate-800 dark:text-slate-200">Dự báo thời tiết — từ IP</h1>
+      <div class="flex gap-2">
+        <button id="toggleTheme" class="px-4 py-2 rounded-xl bg-purple-500 hover:bg-purple-600 text-white shadow-lg transition">🌙 / ☀️</button>
+        <button id="toggleUnits" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white shadow-lg transition">Đổi °C/°F</button>
       </div>
+    </header>
 
-      <div>
-        <label class="block text-sm mb-1">✍️ Nội dung tin nhắn</label>
-        <textarea id="message" rows="3" placeholder="Nội dung spam..."
-          class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
-      </div>
+    <main class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section class="md:col-span-2 card flex flex-col gap-6" id="weatherSection">
+        <div id="loading" class="text-center text-slate-500 dark:text-slate-400">Đang tải...</div>
+      </section>
 
-      <div>
-        <label class="block text-sm mb-1">🧑 Tên hiển thị (username)</label>
-        <input type="text" id="username" placeholder="Webhook Bot"
-          class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"/>
-      </div>
+      <aside class="card flex flex-col gap-4" id="sidebar"></aside>
+    </main>
 
-      <div>
-        <label class="block text-sm mb-1">🖼️ Ảnh avatar (URL)</label>
-        <input type="text" id="avatar" placeholder="https://i.imgur.com/AfFp7pu.png"
-          class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"/>
-      </div>
-
-      <div class="flex gap-2 pt-2">
-        <button onclick="startSpam()" class="w-1/2 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg font-semibold transition">🚀 Bắt đầu</button>
-        <button onclick="stopSpam()" class="w-1/2 bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg font-semibold transition">🛑 Dừng lại</button>
-      </div>
-
-      <div id="status" class="text-center text-sm mt-2"></div>
-      <div class="text-xs text-center text-red-400 dark:text-red-300">⚠️ Đừng chia sẻ URL webhook công khai!</div>
-      <div id="timer" class="text-center text-sm text-blue-400 mt-1"></div>
-    </div>
+    <footer class="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">Thiết kế siêu đẹp, responsive — dùng IP để xác định vị trí. Toàn bộ API đều không cần key, có dự phòng.</footer>
   </div>
 
   <script>
-    let spamInterval;
-    let timerInterval;
-    let seconds = 0;
+    const toggleBtn = document.getElementById('toggleUnits')
+    const toggleTheme = document.getElementById('toggleTheme')
+    const weatherSection = document.getElementById('weatherSection')
+    const sidebar = document.getElementById('sidebar')
+    let units = 'metric' // or 'imperial'
 
-    function startSpam() {
-      const webhookURL = document.getElementById('webhook-url').value.trim();
-      const message = document.getElementById('message').value.trim();
-      const username = document.getElementById('username').value.trim() || 'Webhook Bot';
-      const avatar = document.getElementById('avatar').value.trim() || 'https://i.imgur.com/AfFp7pu.png';
-      const status = document.getElementById('status');
-      const timer = document.getElementById('timer');
+    function cToF(c){ return Math.round((c*9)/5+32) }
+    function formatTemp(c){
+      if(c===null||c===undefined) return '—'
+      return units==='metric'? Math.round(c)+"°C" : cToF(c)+"°F"
+    }
 
-      if (!webhookURL || !message) {
-        status.textContent = '❌ Nhập URL webhook và nội dung tin nhắn!';
-        status.className = 'text-center text-sm text-red-500';
-        return;
+    function formatHour(iso){
+      try{ return new Date(iso).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) }catch(e){ return iso }
+    }
+
+    const WMO_MAP_VI = {0:'Trời quang',1:'Ít mây',2:'Nhiều mây',3:'U ám',45:'Sương mù',48:'Sương mù đóng băng',51:'Mưa phùn nhẹ',53:'Mưa phùn vừa',55:'Mưa phùn nặng',61:'Mưa nhẹ',63:'Mưa vừa',65:'Mưa to',80:'Mưa rào nhẹ',81:'Mưa rào vừa',82:'Mưa rào mạnh',95:'Giông bão',99:'Giông kèm mưa đá mạnh'}
+    function desc(code){ return WMO_MAP_VI[code]||'—' }
+
+    async function fetchLocation(){
+      try{
+        let res = await fetch('https://ipapi.co/json/')
+        if(!res.ok) throw new Error('ipapi lỗi')
+        return await res.json()
+      }catch(e){
+        try{
+          let res = await fetch('https://ipwho.is/')
+          return await res.json()
+        }catch(e2){
+          let res = await fetch('https://freeipapi.com/api/json')
+          return await res.json()
+        }
       }
+    }
 
-      if (!webhookURL.startsWith('https://discord.com/api/webhooks/')) {
-        status.textContent = '❌ URL webhook không hợp lệ!';
-        status.className = 'text-center text-sm text-red-500';
-        return;
+    async function fetchWeather(lat,lon){
+      try{
+        let url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,precipitation_probability,weathercode&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset&timezone=auto&forecast_days=7`
+        let res = await fetch(url)
+        return await res.json()
+      }catch(e){
+        let res = await fetch(`https://wttr.in/${lat},${lon}?format=j1`)
+        return await res.json()
       }
-
-      status.textContent = '📡 Đang spam...';
-      status.className = 'text-center text-sm text-blue-500';
-      seconds = 0;
-
-      timerInterval = setInterval(() => {
-        seconds++;
-        timer.textContent = `⏱️ Thời gian spam: ${formatTime(seconds)}`;
-      }, 1000);
-
-      spamInterval = setInterval(() => {
-        fetch(webhookURL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            content: message,
-            username: username,
-            avatar_url: avatar
-          })
-        }).catch(() => {
-          status.textContent = '⚠️ Gửi thất bại! Webhook có thể đã bị giới hạn.';
-          status.className = 'text-center text-sm text-red-500';
-        });
-      }, 500); // 500ms giữa mỗi lần gửi
     }
 
-    function stopSpam() {
-      clearInterval(spamInterval);
-      clearInterval(timerInterval);
-      const status = document.getElementById('status');
-      const timer = document.getElementById('timer');
-      status.textContent = '✅ Đã dừng spam.';
-      status.className = 'text-center text-sm text-green-500';
-      timer.textContent = '';
+    async function loadWeather(){
+      weatherSection.innerHTML = '<div id="loading" class="text-center text-slate-500 dark:text-slate-400">Đang tải...</div>'
+      try{
+        const loc = await fetchLocation()
+        const lat = parseFloat(loc.latitude || (loc.loc?loc.loc.split(",")[0]: loc.latitude || 0))
+        const lon = parseFloat(loc.longitude || (loc.loc?loc.loc.split(",")[1]: loc.longitude || 0))
+        const weather = await fetchWeather(lat,lon)
+
+        // Hiển thị
+        let html = ''
+        html += `<div class='flex items-center justify-between'>
+                  <div>
+                    <div class='text-slate-500 dark:text-slate-400 text-sm'>Bây giờ</div>
+                    <div class='flex items-end gap-4'>
+                      <div class='text-5xl font-bold text-slate-800 dark:text-slate-100'>${formatTemp(weather.current_weather.temperature)}</div>
+                      <div class='text-slate-600 dark:text-slate-300'>${desc(weather.current_weather.weathercode)}</div>
+                    </div>
+                  </div>
+                  <div class='text-slate-500 dark:text-slate-400 text-sm'>Gió: ${weather.current_weather.windspeed} m/s</div>
+                </div>`
+
+        html += `<div class='mt-4'><div class='text-slate-500 dark:text-slate-400 text-sm mb-2'>Dự báo giờ tới</div><div class='overflow-x-auto flex gap-3 py-2'>`
+        let hours = weather.hourly.time.slice(0,12)
+        for(let i=0;i<hours.length;i++){
+          html += `<div class='min-w-[88px] bg-slate-50 dark:bg-slate-700 rounded-xl p-3 text-center'>
+                      <div class='text-xs text-slate-600 dark:text-slate-300'>${formatHour(weather.hourly.time[i])}</div>
+                      <div class='my-1 text-sm font-medium text-slate-800 dark:text-slate-100'>${formatTemp(weather.hourly.temperature_2m[i])}</div>
+                      <div class='text-xs text-slate-500 dark:text-slate-400'>${Math.round(weather.hourly.precipitation_probability[i]||0)}% mưa</div>
+                   </div>`
+        }
+        html += `</div></div>`
+
+        html += `<div class='mt-6'><div class='text-slate-500 dark:text-slate-400 text-sm mb-2'>7 ngày tới</div><div class='grid grid-cols-2 md:grid-cols-4 gap-3'>`
+        for(let i=0;i<7;i++){
+          html += `<div class='p-3 bg-white dark:bg-slate-700 border rounded-lg shadow-sm flex flex-col items-start gap-1'>
+                    <div class='text-xs text-slate-500 dark:text-slate-400'>${new Date(weather.daily.time[i]).toLocaleDateString()}</div>
+                    <div class='flex items-center gap-3 w-full'>
+                      <div class='flex-1 font-medium text-slate-800 dark:text-slate-100'>${formatTemp(weather.daily.temperature_2m_max[i])}</div>
+                      <div class='w-12 text-slate-600 dark:text-slate-300'>${formatTemp(weather.daily.temperature_2m_min[i])}</div>
+                    </div>
+                    <div class='text-xs text-slate-500 dark:text-slate-400'>${desc(weather.daily.weathercode[i])}</div>
+                  </div>`
+        }
+        html += `</div></div>`
+
+        weatherSection.innerHTML = html
+
+        sidebar.innerHTML = `<div class='text-sm text-slate-500 dark:text-slate-400'>Thông tin nhanh</div>
+                             <div class='text-xs text-slate-500 dark:text-slate-400'>Vị trí: ${loc.city||loc.regionName||''}, ${loc.region||loc.country||''}</div>
+                             <div class='text-xs text-slate-500 dark:text-slate-400'>Mặt trời mọc: ${weather.daily.sunrise[0]}</div>
+                             <div class='text-xs text-slate-500 dark:text-slate-400'>Mặt trời lặn: ${weather.daily.sunset[0]}</div>`
+      }catch(e){
+        weatherSection.innerHTML = `<div class='text-red-600'>Lỗi: ${e.message}</div>`
+      }
     }
 
-    function formatTime(seconds) {
-      const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-      const secs = (seconds % 60).toString().padStart(2, '0');
-      return `${mins}:${secs}`;
-    }
+    toggleBtn.addEventListener('click',()=>{
+      units = units==='metric'?'imperial':'metric'
+      loadWeather()
+    })
+
+    toggleTheme.addEventListener('click',()=>{
+      document.documentElement.classList.toggle('dark')
+    })
+
+    loadWeather()
   </script>
 </body>
 </html>
